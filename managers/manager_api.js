@@ -32,7 +32,10 @@ class API{
 			//var id=req.params.id
 			//var nick_name_result_object=await this.manager_liky.get_nick_name_sycle(id)
 			res.json({result:false,err:true})
-		})						
+		})
+		this.http_server.get('/nick_name',async(req,res)=>{
+			res.send('working')
+		})	
 		this.http_server.listen(3002)
 		console.log('working')
 	}
