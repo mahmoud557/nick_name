@@ -11,7 +11,6 @@ class Maager_pupgy{
 
 	async start(){
 		//this.handel_requstes()
-		//console.log(true)
 		this.handel_sycile_end()
 	}
 
@@ -46,8 +45,6 @@ class Maager_pupgy{
 		})
 	}
 
-
-
 	async get_sycile(id,reserver){
 		try{
 			await this.fill_player_id(id,reserver)	
@@ -58,8 +55,22 @@ class Maager_pupgy{
 			if(!neck_name){return {result:false,err:true}}
 			return {result:neck_name,err:false}
 		}catch(err){
+			console.log(err)
 			return {result:false,err:true}
 		}
+	}
+
+	click_on_player_id_interval(reserver){
+		this.reserver=reserver;
+		setInterval(async()=>{
+			if(!this.in_get_recerjen){
+				try{
+					await this.reserver.waitForSelector(`[placeholder='Please enter Player ID']`,{timeout:4000});
+					var national_id_input=await this.reserver.$(`[placeholder='Please enter Player ID']`,{timeout:4000})
+					await national_id_input.click()				
+				}catch(err){console.log(err)}
+			}
+		},10000)
 	}
 
 	async fill_player_id(id,reserver){
@@ -71,6 +82,7 @@ class Maager_pupgy{
 				await reserver.keyboard.type(id,{delay:200});
 				res(true)
 			}catch(err){
+				console.log(err)
 				res(false)
 			}			
 		})
@@ -84,6 +96,7 @@ class Maager_pupgy{
 				await clouse_bt[0].click()
 				res(true)
 			}catch(err){
+				console.log(err)
 				res(false)
 			}				
 		})
@@ -97,6 +110,7 @@ class Maager_pupgy{
 				await ok_bt[0].click()
 				res(true)
 			}catch(err){
+				console.log(err)
 				res(false)
 			}				
 
@@ -111,6 +125,7 @@ class Maager_pupgy{
 				await edit_bt[0].click()
 				res(true)				
 			}catch(err){
+				console.log(err)
 				res(false)
 			}
 
@@ -137,6 +152,7 @@ class Maager_pupgy{
 				var nikname=await nikname_element[0].evaluate((node) => node.innerText)
 				res(nikname)
 			}catch(err){
+				console.log(err)
 				res(false)
 			}
 		})
