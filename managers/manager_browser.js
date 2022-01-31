@@ -35,6 +35,7 @@ class Manager_Browser{
 		this.manager_pubgy = require('./manager_pubgy.js');
 		//this.manager_free_fire = require('./manager_freefire.js');
 		await this.manager_pubgy.hid_pop_up(this.reserver_tabs['0'])
+		await this.manager_pubgy.click_on_player_id_interval(this.reserver_tabs['0'])
 		//await this.manager_free_fire.get_sycile('1221951090',this.reserver_tabs['1'])
 		this.events.emit('ready')
 	}
@@ -49,7 +50,7 @@ class Manager_Browser{
 					    defaultViewport: null,
 					    ignoreDefaultArgs: ["--disable-extensions"],
 					    ignoreHTTPSErrors: true,
-					    args: ['--allow-file-access-from-files','--enable-features=NetworkService','--no-sandbox','--window-size=1366,768']
+					    args: ['--disable-raf-throttling', '--disable-background-timer-throttling', '--disable-renderer-backgrounding','--allow-file-access-from-files','--enable-features=NetworkService','--no-sandbox','--window-size=1366,768']
 					})
 					this.visible_stat=visible_stat;
 					this.open_state=true;
@@ -73,7 +74,7 @@ class Manager_Browser{
 				    defaultViewport: null,
 				    ignoreDefaultArgs: ["--disable-extensions"],
 				    ignoreHTTPSErrors: true,
-				    args: ['--allow-file-access-from-files','--enable-features=NetworkService','--no-sandbox','--window-size=1366,768']
+				    args: ['--disable-raf-throttling', '--disable-background-timer-throttling', '--disable-renderer-backgrounding','--allow-file-access-from-files','--enable-features=NetworkService','--no-sandbox','--window-size=1366,768']
 				})
 				this.visible_stat=visible_stat;
 				this.context = this.browser.defaultBrowserContext();
