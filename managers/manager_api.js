@@ -29,13 +29,13 @@ class API{
 			res.json(nick_name_result_object)
 		})	
 		this.http_server.get('/nick_name/api/freefire/:id',async(req,res)=>{
-			//var id=req.params.id
-			//var nick_name_result_object=await this.manager_liky.get_nick_name_sycle(id)
-			res.json({result:false,err:true})
+			var id=req.params.id
+			var nick_name_result_object=await this.manager_browser.manager_freefire.get_nick_name_sycle(id,'1')
+			res.json(nick_name_result_object)
 		})
 		this.http_server.get('/nick_name',async(req,res)=>{
 			res.send('working')
-		})	
+		})									
 		this.http_server.listen(3002)
 		console.log('working')
 	}
@@ -56,4 +56,4 @@ class API{
 
 var browser=new API
 
-// /nick_name/api/pupgy/gzBHGMbbJC4J
+// /nick_name/api/likee/693597779

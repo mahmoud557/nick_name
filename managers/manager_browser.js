@@ -1,6 +1,19 @@
 var EventEmitter = require('events');
 var path = require('path')
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+var clous_firest_blank_page_state=false;
+const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha')
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+puppeteer.use(StealthPlugin())
+puppeteer.use(
+  RecaptchaPlugin({
+	    provider: {
+	      id: '2captcha',
+	      token: '4628c8a5502d2ce831730b7e044beef8' // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
+	    },
+    	visualFeedback: true // colorize reCAPTCHAs (violet = detected, green = solved)
+  	})
+)
 class MyEmitter extends EventEmitter {}
 
 class Manager_Browser{
@@ -26,14 +39,16 @@ class Manager_Browser{
 	}
 
 	async start(){
-		await this.open_browser(false)
-		await this.open_reserver_taps(['0'])
+		await this.open_browser(true)
+		await this.open_reserver_taps(['0','1'])
 		await this.load_managers()
-	}	
-
+	}
 	async load_managers(){
 		this.manager_pubgy = require('./manager_pubgy.js');
-		//this.manager_free_fire = require('./manager_freefire.js');
+		this.manager_freefire = require('./manager_freefire.js');
+		this.manager_freefire.set_reserver(this.reserver_tabs['1'],'1')
+		//this.manager_freefire.get_nick_name_sycle('2506885218','1')		
+
 		await this.manager_pubgy.hid_pop_up(this.reserver_tabs['0'])
 		await this.manager_pubgy.click_on_player_id_interval(this.reserver_tabs['0'])
 		//await this.manager_free_fire.get_sycile('1221951090',this.reserver_tabs['1'])
@@ -46,7 +61,7 @@ class Manager_Browser{
 				try{
 					this.browser=await puppeteer.launch({
 						headless: !visible_stat,
-					    slowMo:0,
+					    slowMo:10,
 					    defaultViewport: null,
 					    ignoreDefaultArgs: ["--disable-extensions"],
 					    ignoreHTTPSErrors: true,
@@ -70,7 +85,7 @@ class Manager_Browser{
 			try{
 				this.browser=await puppeteer.launch({
 					headless: !visible_stat,
-				    slowMo:0,
+				    slowMo:10,
 				    defaultViewport: null,
 				    ignoreDefaultArgs: ["--disable-extensions"],
 				    ignoreHTTPSErrors: true,
@@ -119,11 +134,27 @@ class Manager_Browser{
 					await this.reserver_tabs[`${tab_id}`].goto('https://www.midasbuy.com/midasbuy/ot/buy/pubgm?fbclid=IwAR0MVZCms7Fm7Tg7t8pj8YGWxwoaZhlNSd8D00CjILrLNcU4TiL5Q7WhIOc',{waitUntil: 'load', timeout: 0});
 					break;
 				case '1':
-					await this.reserver_tabs[`${tab_id}`].goto('https://shop2game.com/app',{waitUntil: 'load', timeout: 0});
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+					//await this.reserver_tabs[`${tab_id}`].setViewport({ width: 1366, height: 768});
+					await this.reserver_tabs[`${tab_id}`].goto('https://shop2game.com/app/',{waitUntil: 'load', timeout: 0});
 					break;					
 			}
-			
-		}	
+		}
+		this.clous_firest_blank_page_if_open()	
+	}
+
+	async clous_firest_blank_page_if_open(){
+		if(!this.clous_firest_blank_page_state){
+			const pages = await this.browser.pages();
+			if (pages.length > 1) {
+			    await pages[0].close();
+			}
+			this.clous_firest_blank_page_state=true		
+		}
 	}
 
 	async realod(reserver){

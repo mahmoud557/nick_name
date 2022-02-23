@@ -96,7 +96,6 @@ class Maager_pupgy{
 				await clouse_bt[0].click()
 				res(true)
 			}catch(err){
-				console.log(err)
 				res(false)
 			}				
 		})
