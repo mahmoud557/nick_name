@@ -78,6 +78,7 @@ class Manager_free_fire{
 			if(!neck_name){return {result:false,err:true}}
 			return {result:neck_name,err:false}			
 		}catch(err){
+			await reserver.screenshot({ path: `${err}.png` });
 			console.log('error catch',err)
 			await this.realod(reserver)
 			return {sucssess:false,err:err}
