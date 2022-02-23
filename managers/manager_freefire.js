@@ -78,7 +78,6 @@ class Manager_free_fire{
 			if(!neck_name){return {result:false,err:true}}
 			return {result:neck_name,err:false}			
 		}catch(err){
-			await reserver.screenshot({ path: `${err}.png` });
 			console.log('error catch',err)
 			await this.realod(reserver)
 			return {sucssess:false,err:err}
@@ -89,9 +88,9 @@ class Manager_free_fire{
 	get_name_text(reserver){
 		return new Promise(async(res,rej)=>{
 			try{
-				await reserver.waitForXPath('//*[@id="react-root"]/div/header/div/div[3]/div[1]/div/div[2]')
-				var free_fire_button=await reserver.$x(`//*[@id="react-root"]/div/header/div/div[3]/div[1]/div/div[2]`)
-				const value = await free_fire_button[0].evaluate(el => el.textContent);
+				await reserver.waitForSelector('._2QdiuL_QlCieAAl1OTTsY0')
+				var free_fire_button=await reserver.$(`._2QdiuL_QlCieAAl1OTTsY0`)
+				const value = await free_fire_button.evaluate(el => el.textContent);
 				res(value)
 			}catch(err){
 				rej('Error in get_name_text')
