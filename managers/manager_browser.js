@@ -39,14 +39,15 @@ class Manager_Browser{
 	}
 
 	async start(){
-		await this.open_browser(false)
-		await this.open_reserver_taps(['0','1'])
+		await this.open_browser(true)
+		await this.open_reserver_taps(['0'])
 		await this.load_managers()
 	}
 	async load_managers(){
 		this.manager_pubgy = require('./manager_pubgy.js');
-		this.manager_freefire = require('./manager_freefire.js');
-		this.manager_freefire.set_reserver(this.reserver_tabs['1'],'1')
+		//this.manager_freefire = require('./manager_freefire.js');
+		//this.manager_freefire.set_reserver(this.reserver_tabs['1'],'1')
+		//this.manager_freefire.set_reserver(this.reserver_tabs['2'],'2')
 		//this.manager_freefire.get_nick_name_sycle('2506885218','1')		
 
 		await this.manager_pubgy.hid_pop_up(this.reserver_tabs['0'])

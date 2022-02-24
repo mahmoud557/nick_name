@@ -7,8 +7,10 @@ class MyEmitter extends EventEmitter {}
 class Manager_free_fire{
 	constructor(props) {
 		this.reservers={};
+		this.last_reserver_id;
 		this.in_get_recerjen=false;
 		this.last_sycile_id=0;
+		this.cache=[{id:'808306716',nick_name:'zzz'}];
 		this.events=new MyEmitter();
 		this.start()
 	}
@@ -27,17 +29,65 @@ class Manager_free_fire{
 		this.handel_reserver_sycile_end(reserver_id)
 	}
 
+	get_next_reserver_id(){
+		var reservers_ids=Object.keys(this.reservers);
+		if(!this.last_reserver_id){
+			this.last_reserver_id=reservers_ids[0]
+			return this.last_reserver_id
+		}
+		if(this.last_reserver_id==reservers_ids[reservers_ids.length-1]){
+			this.last_reserver_id=reservers_ids[0]
+			return this.last_reserver_id
+		}else{
+			var index_of_last_reserver_id=reservers_ids.indexOf(this.last_reserver_id);
+			index_of_last_reserver_id+=1;
+			this.last_reserver_id=reservers_ids[index_of_last_reserver_id]
+			return this.last_reserver_id	
+		}
+	}
 
-
-	get_nick_name_sycle(id,reserver_id){
+	get_nick_name_sycle(id){
 		return new Promise((res,rej)=>{
-			this.reservers[reserver_id]['last_waiting_id']++
-			this.reservers[reserver_id]['waiting_qu'][`${this.reservers[reserver_id]['last_waiting_id']}`]={res:res,id:id,reserver:this.reservers[reserver_id]['reserver']}
-			this.reservers[reserver_id]['waiting_qu_count']++
-			if(!this.reservers[reserver_id]['in_get_recerjen']){
-				this.events.emit(`${reserver_id}_sycil_end`)
+			var neck_name=this.get_nick_name_from_cache(id)
+			if(neck_name){return res({result:neck_name,err:false})}
+			if(!neck_name){
+				var id_in_get_ress_array=this.cheek_if_id_in_any_get_qu_and_return_ress_array(id)
+				if(id_in_get_ress_array){
+					id_in_get_ress_array.push(res)
+				}else{
+					var reserver_id=this.get_next_reserver_id()
+					this.reservers[reserver_id]['last_waiting_id']++
+					this.reservers[reserver_id]['waiting_qu'][`${this.reservers[reserver_id]['last_waiting_id']}`]={ress:[res],id:id,reserver:this.reservers[reserver_id]['reserver']}
+					this.reservers[reserver_id]['waiting_qu_count']++
+					if(!this.reservers[reserver_id]['in_get_recerjen']){
+						this.events.emit(`${reserver_id}_sycil_end`)
+					}
+				}
 			}
 		})
+	}
+
+	cheek_if_id_in_any_get_qu_and_return_ress_array(id){
+		for(var key in this.reservers){
+			var id_in_qu_res=this.chek_if_id_in_qu(this.reservers[key]['waiting_qu'],id)
+			if(id_in_qu_res){return id_in_qu_res}
+		}
+		return false
+	}
+
+	chek_if_id_in_qu(qu,id){
+		for(var row_key in qu){
+			if(qu[row_key]['id']==id){return qu[row_key]['ress']}
+		}
+		return false;		
+	}
+
+	get_nick_name_from_cache(id){
+		var nick_name_row=this.cache.filter((cach_row)=>{
+			return cach_row.id==id
+		})
+		if(!nick_name_row[0]){return false}
+		return nick_name_row[0].nick_name 
 	}
 
 	get_firest_key_of_syciles_qu(reserver_id){
@@ -52,7 +102,8 @@ class Manager_free_fire{
 				this.reservers[reserver_id]['in_get_recerjen']=true;
 				var sycile_object=this.reservers[reserver_id]['waiting_qu'][firest_sycile_key];
 				var neck_name=await this.get_sycile(sycile_object['id'],sycile_object['reserver'])
-				sycile_object['res'](neck_name)
+				//sycile_object['res'](neck_name)
+				for(var res of sycile_object['ress']){res(neck_name)}
 				delete this.reservers[reserver_id]['waiting_qu'][firest_sycile_key];
 				this.reservers[reserver_id]['waiting_qu_count']--
 				this.events.emit(`${reserver_id}_sycil_end`)
@@ -74,8 +125,10 @@ class Manager_free_fire{
 			await this.solve_capatcha_if_exsesst(reserver)
 			await this.log_in_after_solve(reserver)
 			var neck_name=await this.get_name_text(reserver)
+			console.log(neck_name)
 			await this.realod(reserver)
 			if(!neck_name){return {result:false,err:true}}
+			console.log('down')
 			return {result:neck_name,err:false}			
 		}catch(err){
 			console.log('error catch',err)
@@ -343,53 +396,56 @@ class Manager_free_fire{
         })
     }
  	async realod(reserver){
-		await reserver.deleteCookie(...[
-		{
-            name : 'JSESSIONID',
-            domain : "checkoutshopper-live.adyen.com"
-        },
-		{
-            name : 'JSESSIONID',
-            domain : "checkoutshopper-live.adyen.com"
-        },
-		{
-            name : '__csrf__',
-            domain : "shop2game.com"
-        },
-		{
-            name : '_ga_TVZ1LG7BEB',
-            domain : "shop2game.com"
-        },
-		{
-            name : 'datadome',
-            domain : "shop2game.com"
-        },
-		{
-            name : '_ga',
-            domain : "shop2game.com"
-        },
-		{
-            name : 'language',
-            domain : "shop2game.com"
-        },
-		{
-            name : 'region',
-            domain : "shop2game.com"
-        }, 
-		{
-            name : 'session_key',
-            domain : "shop2game.com"
-        },
-		{
-            name : 'source',
-            domain : "shop2game.com"
-        },
-		{
-            name : 'GOP',
-            domain : "shop2game.com"
-        },                
-        ])
-		await reserver.reload({ waitUntil: ["networkidle0", "domcontentloaded"] });
+ 		try{
+			await reserver.deleteCookie(...[
+			{
+	            name : 'JSESSIONID',
+	            domain : "checkoutshopper-live.adyen.com"
+	        },
+			{
+	            name : 'JSESSIONID',
+	            domain : "checkoutshopper-live.adyen.com"
+	        },
+			{
+	            name : '__csrf__',
+	            domain : "shop2game.com"
+	        },
+			{
+	            name : '_ga_TVZ1LG7BEB',
+	            domain : "shop2game.com"
+	        },
+			{
+	            name : 'datadome',
+	            domain : "shop2game.com"
+	        },
+			{
+	            name : '_ga',
+	            domain : "shop2game.com"
+	        },
+			{
+	            name : 'language',
+	            domain : "shop2game.com"
+	        },
+			{
+	            name : 'region',
+	            domain : "shop2game.com"
+	        }, 
+			{
+	            name : 'session_key',
+	            domain : "shop2game.com"
+	        },
+			{
+	            name : 'source',
+	            domain : "shop2game.com"
+	        },
+			{
+	            name : 'GOP',
+	            domain : "shop2game.com"
+	        },                
+	        ])
+			await reserver.reload({ waitUntil: ["networkidle0", "domcontentloaded"] }); 			
+ 		}catch(err){console.log('error in reload',err)}
+
 	}	   
 
 }
@@ -403,7 +459,7 @@ class Manager_free_fire{
 //5812478917341867
 //R6SZVT
 //https://gop.captcha.garena.com/image?key=172deb2f-2f33-41cf-be1f-b15f5ecaa865
-
+//https://as7abcard.com/pubg-files/freefire.php?action=getPlayerName&game=freefire&playerID=2506885218
 Object.defineProperty(Array.prototype, 'random', {
   value: function(chunkSize) {
   	  if(this.length==0){return new Error('Cant Use Roundom With Empty Array')}
@@ -417,4 +473,6 @@ Object.defineProperty(Array.prototype, 'random', {
 module.exports= new Manager_free_fire
 
 
+//https://shop2game.com/app/100067/login?next=/app/100067/buy/0
 
+//https://shop2game.com/app/100067/idlogin?next=/app/100067/buy/0

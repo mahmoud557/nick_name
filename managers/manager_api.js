@@ -30,8 +30,12 @@ class API{
 		})	
 		this.http_server.get('/nick_name/api/freefire/:id',async(req,res)=>{
 			var id=req.params.id
-			var nick_name_result_object=await this.manager_browser.manager_freefire.get_nick_name_sycle(id,'1')
-			res.json(nick_name_result_object)
+			var nick_name_result_object=await this.manager_ashab.get_nick_name_sycle(id)
+			res.json(nick_name_result_object)			
+			/*var id=req.params.id
+			var nick_name_result_object=await this.manager_browser.manager_freefire.get_nick_name_sycle(id)
+			res.json(nick_name_result_object)*/
+
 		})
 		this.http_server.get('/nick_name',async(req,res)=>{
 			res.send('working')
@@ -43,6 +47,7 @@ class API{
 	async load_managers(){
 		this.manager_browser = require('./manager_browser.js');
 		this.manager_liky = require('./manager_liky.js');
+		this.manager_ashab = require('./manager_ashab.js');
 		await this.manager_browser.ready()
 	}	
 
