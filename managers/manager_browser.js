@@ -40,18 +40,18 @@ class Manager_Browser{
 
 	async start(){
 		await this.open_browser(true)
-		await this.open_reserver_taps(['0'])
+		await this.open_reserver_taps(['1'])
 		await this.load_managers()
 	}
 	async load_managers(){
-		this.manager_pubgy = require('./manager_pubgy.js');
-		//this.manager_freefire = require('./manager_freefire.js');
-		//this.manager_freefire.set_reserver(this.reserver_tabs['1'],'1')
+		//this.manager_pubgy = require('./manager_pubgy.js');
+		this.manager_freefire = require('./manager_freefire.js');
+		this.manager_freefire.set_reserver(this.reserver_tabs['1'],'1')
 		//this.manager_freefire.set_reserver(this.reserver_tabs['2'],'2')
-		//this.manager_freefire.get_nick_name_sycle('2506885218','1')		
+		this.manager_freefire.get_nick_name_sycle('2506885218','1')		
 
-		await this.manager_pubgy.hid_pop_up(this.reserver_tabs['0'])
-		await this.manager_pubgy.click_on_player_id_interval(this.reserver_tabs['0'])
+		//await this.manager_pubgy.hid_pop_up(this.reserver_tabs['0'])
+		//await this.manager_pubgy.click_on_player_id_interval(this.reserver_tabs['0'])
 		//await this.manager_free_fire.get_sycile('1221951090',this.reserver_tabs['1'])
 		this.events.emit('ready')
 	}
@@ -141,7 +141,7 @@ class Manager_Browser{
 				case '5':
 				case '6':
 					//await this.reserver_tabs[`${tab_id}`].setViewport({ width: 1366, height: 768});
-					await this.reserver_tabs[`${tab_id}`].goto('https://antoinevastel.com/bots/datadome',{waitUntil: 'load', timeout: 0});
+					await this.reserver_tabs[`${tab_id}`].goto('https://shop2game.com/app',{waitUntil: 'load', timeout: 0});
 					break;					
 			}
 		}
