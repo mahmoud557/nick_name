@@ -32,11 +32,14 @@ class API{
 			var id=req.params.id
 			var nick_name_result_object=await this.manager_ashab.get_nick_name_sycle_free_fire(id)
 			res.json(nick_name_result_object)			
-			/*var id=req.params.id
-			var nick_name_result_object=await this.manager_browser.manager_freefire.get_nick_name_sycle(id)
-			res.json(nick_name_result_object)*/
-
 		})
+		
+		this.http_server.get('/nick_name/api/jawaker/:id',async(req,res)=>{
+			var id=req.params.id
+			var nick_name_result_object=await this.manager_jawaker.get_nick_name_sycle(id)
+			res.json(nick_name_result_object)			
+		})
+
 		this.http_server.get('/nick_name',async(req,res)=>{
 			res.send('working')
 		})									
@@ -48,6 +51,7 @@ class API{
 		//this.manager_browser = require('./manager_browser.js');
 		this.manager_liky = require('./manager_liky.js');
 		this.manager_ashab = require('./manager_ashab.js');
+		this.manager_jawaker = require('./manager_jawaker.js');
 		//await this.manager_browser.ready()
 	}	
 
